@@ -66,11 +66,8 @@ public class KafkaGPSProducer extends Thread {
 
             String line = null;
             while ((line = br.readLine()) != null) {
-
-
                 String[] tuple = line.split(",");
                 producer.sendMessage(tuple[0], line);
-
             }
 
         } catch (Exception e) {
