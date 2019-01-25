@@ -19,10 +19,10 @@ public class KafkaGPSProducer extends Thread {
     private final Boolean isAsync;
 
     public KafkaGPSProducer(String topic, Boolean isAsync) {
-        //System.out.println("kafka host: "+ System.getenv("KAFKA_HOST"));
+        System.out.println("kafka host: "+ System.getenv("KAFKA_HOST"));
         Properties props = new Properties();
-        //props.put("bootstrap.servers", System.getenv("KAFKA_HOST") + ":9092");
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
+        //props.put("bootstrap.servers", "localhost:9092");
 
         props.put("key.serializer",
                 "org.apache.kafka.common.serialization.StringSerializer");

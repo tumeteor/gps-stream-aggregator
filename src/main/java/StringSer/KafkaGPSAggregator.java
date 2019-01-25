@@ -13,7 +13,7 @@ import java.util.Properties;
 
 public class KafkaGPSAggregator {
 
-    private static final long SIZE_MS = 1 * 60 * 60;
+    private static final long SIZE_MS = 3 * 60;
 
     public static void main (String[] args) {
 
@@ -55,7 +55,6 @@ public class KafkaGPSAggregator {
                 break;
             }
         }
-
     }
 
 
@@ -81,7 +80,7 @@ public class KafkaGPSAggregator {
         final KStream<String, String> gpsLines = builder.stream("my-topic", Consumed.with(stringSerde, stringSerde));
         final Serde<Windowed<String>> windowedSerde = WindowedSerdes.timeWindowedSerdeFrom(String.class);
 
-        KTable<Windowed<String>, String> gpsTable = gpsLines
+        gpsLines
                 .mapValues(v -> parseTuple(v))
                 // flatmap values (geo loc), split by tab
                 .flatMapValues(textLine -> Arrays.asList(textLine.split("\t")))
@@ -89,7 +88,6 @@ public class KafkaGPSAggregator {
                 .groupByKey()
                 .windowedBy(TimeWindows.of(SIZE_MS).until(SIZE_MS))
                 //.reduce((aggValue, newValue) -> aggValue  + "/t" + newValue);
-
                 .aggregate(new Initializer<String>() {
                     public String apply() {
                         return "";
@@ -97,13 +95,13 @@ public class KafkaGPSAggregator {
                 }, new Aggregator<String, String, String>() {
                     @Override
                     public String apply(String aggKey, String value, String aggregate) {
-                        System.out.println(value);
-                        return aggregate + "\t" + value;
+                        if (aggregate == "" || aggregate == null) return value;
+                        else  return aggregate + "\t" + value;
+
                     }
-                });
+                })
+                .toStream().to("gps-trace-output", Produced.with(windowedSerde, Serdes.String()));
 
-
-        gpsTable.toStream().to("gps-trace-output", Produced.with(windowedSerde, Serdes.String()));
         return builder.build();
     }
 }

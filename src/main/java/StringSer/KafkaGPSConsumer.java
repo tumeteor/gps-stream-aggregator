@@ -42,17 +42,25 @@ public class KafkaGPSConsumer {
             while (true){
                 ConsumerRecords records = consumer.poll(Duration.ofMillis(3));
                 System.out.println(records.count());
-                Iterator<ConsumerRecord<String, String>> recordItr = records.iterator();
+                Iterator<ConsumerRecord<Windowed<String>, String>> recordItr = records.iterator();
 
                 while (recordItr.hasNext()) {
-                    ConsumerRecord<String, String> record = recordItr.next();
-                    System.out.println(String.format("Topic - %s, Partition - %d, Value: %s", record.topic(), record.partition(), record.value()));
+                    ConsumerRecord<Windowed<String>, String> record = recordItr.next();
+                    System.out.println(String.format("Topic - %s, Partition - %d, Key: %s, Value: %s", record.topic(), record.partition(),
+                            record.key(), record.value()));
 
-                    if (record != null || record.value().trim() != "") {
+
+                    if (record != null) {
                         /**
                          * send data to OSRM for map-matching
+                         * NOTE: as data is streamed with 'fake' timestamps,
+                         * WindowedBy at Aggregation does not work, OSRM can't handle too long trace.
+                         * Dummy Trick: for testing the flow, break down the trace now.
                          */
-                        System.out.println("start map matching");
+
+                        System.out.println("start map-matching");
+                        System.out.println(record.key().toString());
+
                         JSONObject map_matched = osrm_match.matchPoints(Utils.parseCoordinate(record.value()));
                         if (map_matched != null)
                             System.out.println(Utils.toPrettyFormat(map_matched));
@@ -61,7 +69,7 @@ public class KafkaGPSConsumer {
                 }
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }finally {
             consumer.close();
         }

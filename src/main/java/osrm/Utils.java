@@ -24,8 +24,32 @@ public class Utils {
         }
         // dummy remove extra ; at the end
         return StringUtils.substring(result, 0, result.length() - 1);
-
     }
+
+    /**
+     * Dummy parsing to not produce a long trace - for testing OSRM map-matching only
+     * coordinates	String of format  {longitude},{latitude};{longitude},{latitude}[;{longitude},{latitude} ...] or  polyline({polyline})
+     * @param raw from stream aggregation, in the form of lon,lat\tlon,lat..
+     * @return
+     */
+    public static String dummyParseCoordinate(String raw) {
+        String result = "";
+        String[] coor_pairs = raw.split("\t|\\s+");
+        int limit_length = 5;
+        int idx = 0;
+        for (String coor_pair : coor_pairs) {
+            String[] _coor_pair = coor_pair.split(",");
+            String lon = _coor_pair[0];
+            String lat = _coor_pair[1];
+
+            result +=  lon + "," + lat + ";";
+            idx ++;
+            if (idx >= limit_length) break;
+        }
+        // dummy remove extra ; at the end
+        return StringUtils.substring(result, 0, result.length() - 1);
+    }
+
 
     /**
      * Convert a JSON string to pretty print version
@@ -38,5 +62,10 @@ public class Utils {
         String prettyJson = gson.toJson(json);
 
         return prettyJson;
+    }
+
+    public static void main (String[] args) {
+        String raw = "13.43605,52.417229999999996\t13.436279999999998,52.41727\t13.436520000000002,52.4173";
+        System.out.println(Utils.parseCoordinate(raw));
     }
 }
