@@ -4,8 +4,8 @@ metadata:
   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
 data:
-  SERVICE: {{ .Chart.Name | quote }}
-  VERSION: {{ .Chart.Version | quote }}
+  SERVICE: {{ .Chart.Name }}
+  VERSION: {{ .Chart.Version }}
 
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
   #NODE_ENV: "production"
