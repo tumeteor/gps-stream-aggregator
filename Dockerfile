@@ -1,9 +1,12 @@
-FROM maven:3.5-jdk-8-alpine
+FROM maven:3.5-jdk-8-alpine AS build
 RUN mkdir kafkamisc
 ADD . /kafkamisc
 WORKDIR /kafkamisc
 
 RUN mvn clean package
+
+FROM openjdk:8
+
 EXPOSE 9092:9092
 CMD java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer
 
