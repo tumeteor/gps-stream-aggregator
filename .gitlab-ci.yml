@@ -1,4 +1,19 @@
 image: maven:3.5-jdk-8-alpine
+stages:
+  - build
+  - test
+  - deploy
 
 build:
+  # A job is always executed within a stage.
+  # If no stage is set, it defaults to 'test'.
+  stage: test
+  # Since we require Maven for this job,
+  # we can restrict the job to runners with a certain tag.
+  # Of course, it is our duty to actually configure a runner
+  # with the tag 'maven' and a working maven installation
+  tags:
+    - maven
+  # Here you can execute arbitrate terminal commands.
+  # If any of the commands returns a non zero exit code the job fails.
   script: "mvn clean install -B"
