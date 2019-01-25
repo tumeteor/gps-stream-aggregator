@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  SERVICE: {{ .Chart.Name | quote }}
+  VERSION: {{ .Chart.Version | quote }}
+
+  #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
+  #NODE_ENV: "production"
+  #URL: "https://{{ .Values.service }}.{{ .Release.Namespace }}.{{ .Values.global.base_url }}"
+  #ZIPKIN_SERVICE_URL: http://zipkin.{{ .Release.Namespace }}:9411
+
+  #BASE_PATH: /v1
