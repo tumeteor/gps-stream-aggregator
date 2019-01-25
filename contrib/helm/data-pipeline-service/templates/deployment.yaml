@@ -38,8 +38,8 @@ spec:
           name: {{ .Release.Namespace }}-{{ .Chart.Name }}
           imagePullPolicy: Always
 
-          ports:
-          - containerPort: {{ .Values.port }}
+#          ports:
+#          - containerPort: {{ .Values.port }}
 
           envFrom:
           - configMapRef:
@@ -62,10 +62,10 @@ spec:
   spec:
     selector:
       app: {{ .Release.Namespace }}-{{ .Chart.Name }}
-    ports:
-        - protocol: TCP
-          name: http
-          port: {{ .Values.port }}
-          targetPort: {{ .Values.port }}
+#    ports:
+#        - protocol: TCP
+#          name: http
+#          port: {{ .Values.port }}
+#          targetPort: {{ .Values.port }}
 
 
