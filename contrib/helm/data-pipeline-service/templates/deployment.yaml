@@ -38,9 +38,6 @@ spec:
           name: {{ .Release.Namespace }}-{{ .Chart.Name }}
           imagePullPolicy: Always
 
-#          ports:
-#          - containerPort: {{ .Values.port }}
-
           envFrom:
           - configMapRef:
               name: {{ .Release.Namespace }}-{{ .Chart.Name }}
