@@ -6,9 +6,9 @@ WORKDIR /kafkamisc
 RUN mvn clean package
 
 FROM openjdk:8
-
+COPY --from=build kafkamisc/target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar
 EXPOSE 9092:9092
-CMD java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer
+CMD java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer
 
 
 #FROM python:3.5
