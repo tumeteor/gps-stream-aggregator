@@ -22,6 +22,7 @@ public class KafkaGPSProducer extends Thread {
         System.out.println("kafka host: "+ System.getenv("KAFKA_HOST"));
         Properties props = new Properties();
         props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
+        //namespace-kafka on k8s
         //props.put("bootstrap.servers", "localhost:9092");
 
         props.put("key.serializer",
