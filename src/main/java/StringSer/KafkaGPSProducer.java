@@ -103,15 +103,16 @@
 
                 while (true) {
                     final String line = br.readLine();
-
-                    String[] tuple = line.split(",");
-                    producer.sendMessage(tuple[0], line);
                     //TRICK to get the stream run continuously
                     //reset the stream
                     if (line == null) {
                         is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
                         br = new BufferedReader(new InputStreamReader(is));
                     }
+
+                    String[] tuple = line.split(",");
+                    producer.sendMessage(tuple[0], line);
+
                 }
 
             } catch (ParseException e) {

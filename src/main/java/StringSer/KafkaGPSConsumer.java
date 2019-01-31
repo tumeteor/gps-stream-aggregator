@@ -22,7 +22,7 @@ public class KafkaGPSConsumer {
 
     public static void main(String[] args) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
 //        props.put("key.deserializer",
 //                "org.apache.kafka.common.serialization.StringDeserializer");
 //        props.put("value.deserializer",
