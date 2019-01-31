@@ -108,6 +108,7 @@
                     if (line == null) {
                         is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
                         br = new BufferedReader(new InputStreamReader(is));
+                        continue;
                     }
 
                     String[] tuple = line.split(",");
