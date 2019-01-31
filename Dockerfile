@@ -1,4 +1,5 @@
-FROM maven:3.5-jdk-8-alpine AS build
+#FROM maven:3.5-jdk-8-alpine AS build
+FROM maven:3.5-jdk-8-alpine
 RUN mkdir kafkamisc
 ADD . /kafkamisc
 WORKDIR /kafkamisc
