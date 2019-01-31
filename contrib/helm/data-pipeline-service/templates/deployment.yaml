@@ -40,7 +40,7 @@ spec:
 
           envFrom:
           - configMapRef:
-              name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+              name: {{ .Release.Namespace }}-{{ .Chart.Name }}-producer
 
           env:
             - name: MY_POD_NAME
@@ -50,7 +50,25 @@ spec:
 
 
           command: ["/bin/sh"]
-          args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer"]
+          args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"]
+
+        - image: {{ .Values.image }}
+            name: {{ .Release.Namespace }}-{{ .Chart.Name }}-aggregator
+            imagePullPolicy: Always
+
+            envFrom:
+              - configMapRef:
+                  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+            env:
+              - name: MY_POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+
+
+            command: ["/bin/sh"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
 
 
   kind: Service
