@@ -6,7 +6,7 @@ metadata:
 data:
   SERVICE: {{ .Chart.Name }}
   VERSION: {{ .Chart.Version }}
-  KAFKA_HOST: {{ .Release.Namespace }}-kafka
+  KAFKA_HOST: {{ .Release.Namespace }}-kafka-0
 
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
   #NODE_ENV: "production"
