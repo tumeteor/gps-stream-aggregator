@@ -60,12 +60,6 @@ spec:
           - configMapRef:
                   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
-          env:
-            - configMapRef:
-                name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-
-
-
           command: ["/bin/sh"]
           args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
 
