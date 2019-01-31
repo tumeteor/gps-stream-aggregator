@@ -40,7 +40,7 @@ spec:
 
           envFrom:
           - configMapRef:
-              name: {{ .Release.Namespace }}-{{ .Chart.Name }}-producer
+              name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
           env:
             - name: MY_POD_NAME
@@ -61,10 +61,9 @@ spec:
                   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
           env:
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+            - configMapRef:
+                name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
 
 
           command: ["/bin/sh"]
