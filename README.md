@@ -17,6 +17,5 @@ returned the from-to-speed information) is then used by the traffic model for tr
 <img src="images/offline_mode_dp.png"  alt = "Offline mode" width="500">
 
 
-For offline mode, it is specifically to handle the scenario when the **base map is changed** - that is supposed to be a periodical behavior of base map providers (i.e., HERE, Civil Map, OSM).
-. The change of the base map does not (yet?) preserve the IDs (nodes, edges) of the previous version. In this case, the historical map-matched data is obsoleted and becomes invalid with the new base map. Thus the historical GPS data 
+For offline mode, it is specifically to handle the scenario when the **base map is changed** - that is supposed to be a periodical behavior of base map providers (i.e., HERE, Civil Map, OSM). The change of the base map does not (yet?) preserve the IDs (nodes, edges) of the previous version. In this case, the historical map-matched data is obsoleted and becomes invalid with the new base map. Thus the historical GPS data 
 will need to be re-map matched (in batch mode) to be ingested into the traffic model for re-training / inference. 
