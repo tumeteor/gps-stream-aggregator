@@ -38,14 +38,17 @@ will persist the Kafka data to s3 / DB. The traffic model component will be in a
 ## Dev
 
 ### Prerequisites:
-    * Install Java 8 and Maven 3
-    * You may need to set your `JAVA_HOME`.
-    * Compile with
-    ```bash
-    # Compile and run
-    mvn compile install
-    mvn -q exec:java -Dexec.args="your-bucket-name"
-    ```
+
+* Install Java 8 and Maven 3
+* You may need to set your `JAVA_HOME`.
+* Compile with:
+```bash
+# Compile and run
+mvn compile install
+mvn -q exec:java -Dexec.args="your-bucket-name"
+```
+ 
+    
 
 ## Docker 🐳
 
