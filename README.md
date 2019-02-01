@@ -7,7 +7,7 @@ A data pipeline over Kafka for processing GPS streaming data. There are major co
 
 The figures below illustate the data pipeline at **Online** mode and **Offline** mode. Disclaimer: offline mode here is not necessarily 'training mode' of the traffic model.
 
-![Online mode](images/online_mode_dp.png?raw=true "Online mode data pipeline")
+<img src="images/online_mode_dp.png"  alt = "Online mode" width="800">
 
 Online mode diagram demonstrates the ingestion pipeline of GPS data in stream / real-time. The training process of the traffic model is an acsynchronous process. Specifically, at first,
 GPS data is sent / serialized into Kafka from the external provider (e.g., MyTaxi). Then it is sent to a stream processor (Kafka Stream in the current version) for doing 
