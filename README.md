@@ -31,4 +31,14 @@ is in `pending mode`, and will wait for the whole process to be finished to be f
 
 # Kubenetes Setup and Configuration
 
+For the pipeline, we design two major containers (`aggregator` for stream processor and `consumer` for interacting with a running routing service). The other containers 
+will persist the Kafka data to s3 / DB. The traffic model component will be in a separate project (thus a separate pod).
+
+## Docker 🐳
+
+`docker-compose up -d --build` to start and `docker-compose down` to stop.
+
+
+
+
 TODO..
