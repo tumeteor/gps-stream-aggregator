@@ -1,3 +1,4 @@
+# Overview
 A data pipeline over Kafka for processing GPS streaming data. There are major components:
 1. a (simulating) producer that generates GPS data in the basic format of <vehicleID, lon, lat, timestamp>
 2. a stream processor topology that aggregates GPS data by vehicleID in every pre-defined time window to form a GPS ``trace''
@@ -22,6 +23,6 @@ will need to be re-map matched (in batch mode) to be ingested into the traffic m
 the whole process to be finished to be fed again with up-to-date traffic prediction.
 
 
-**Kubenetes Setup and Configuration**
+# Kubenetes Setup and Configuration
 
 TODO..
