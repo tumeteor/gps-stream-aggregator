@@ -8,6 +8,6 @@ A data pipeline over Kafka for processing GPS streaming data. There are major co
 The data pipeline at **Online** mode and **Offline** mode:
 
 ![Online mode](images/online_mode_dp.png?raw=true "Online mode data pipeline")
-![Offline mode](images/offline_mode_dp.png?raw=true "Offline mode data pipeline")
+![Offline mode](images/offline_mode_dp.png?raw=true "Offline mode data pipeline"){:height="50%" width="50%"}
 
 
