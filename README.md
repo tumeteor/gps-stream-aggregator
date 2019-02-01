@@ -34,6 +34,19 @@ is in `pending mode`, and will wait for the whole process to be finished to be f
 For the pipeline, we design two major containers (`aggregator` for stream processor and `consumer` for interacting with a running routing service). The other containers 
 will persist the Kafka data to s3 / DB. The traffic model component will be in a separate project (thus a separate pod).
 
+
+## Dev
+
+**Prerequisites:**
+    * Install Java 8 and Maven 3
+    * You may need to set your `JAVA_HOME`.
+    * Compile with
+    ```bash
+# Compile and run
+mvn compile install
+mvn -q exec:java -Dexec.args="your-bucket-name"
+```
+
 ## Docker 🐳
 
 `docker-compose up -d --build` to start and `docker-compose down` to stop.
