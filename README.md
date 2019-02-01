@@ -8,6 +8,7 @@ A data pipeline over Kafka for processing GPS streaming data. There are major co
 
 The figures below illustate the data pipeline at **Online** mode and **Offline** mode. Disclaimer: offline mode here is not necessarily 'training mode' of the traffic model.
 
+## Online mode
 <img src="images/online_mode_dp.png"  alt = "Online mode" width="800">
 
 Online mode diagram demonstrates the ingestion pipeline of GPS data in stream / real-time. The training process of the traffic model is an acsynchronous process. Specifically, at first,
@@ -15,6 +16,7 @@ GPS data is sent / serialized into Kafka from the external provider (e.g., MyTax
 `windowed aggregation / sampling` to form the "traces" of the vehicle. These `traces' information is then sent to a **routing service** instance (e.g., OSRM) for map-matching. The map-matching results (which
 returned the from-to-speed information) is then used by the traffic model for training / inference.
 
+## Offline mode
 <img src="images/offline_mode_dp.png"  alt = "Offline mode" width="500">
 
 
