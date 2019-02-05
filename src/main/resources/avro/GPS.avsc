@@ -1,0 +1,10 @@
+{"namespace": "das.gps.avro",
+  "type": "record",
+  "name": "gps",
+  "fields": [
+    {"name": "vehicleId", "type": "string"},
+    {"name": "timestamp",  "type": "long"},
+    {"name": "lon",  "type": "string"},
+    {"name": "lat",  "type": "string"}
+  ]
+}

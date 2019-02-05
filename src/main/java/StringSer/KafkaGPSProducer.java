@@ -5,6 +5,8 @@
     import org.apache.kafka.clients.producer.KafkaProducer;
     import org.apache.kafka.clients.producer.ProducerRecord;
     import org.apache.kafka.clients.producer.RecordMetadata;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
 
     import java.io.BufferedReader;
     import java.io.IOException;
@@ -28,6 +30,9 @@
 
         private final KafkaProducer<String, String> producer;
         private final Boolean isAsync;
+
+        private static Logger log = LoggerFactory.getLogger("KafkaGPSProducer");
+
 
         /*
         Switch mode for K8S or docker-compose
@@ -66,7 +71,7 @@
                     producer.send(
                             new ProducerRecord<>(topicName, key, value))
                             .get();
-                    System.out.println("Sent message: (" + key + ", " + value + ")");
+                    log.info("Sent message: (" + key + ", " + value + ")");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -136,6 +141,7 @@
         private long startTime;
         private String key;
         private String message;
+        private static Logger log = LoggerFactory.getLogger("DemoCallBack");
 
         public DemoCallBack(long startTime, String key, String message) {
             this.startTime = startTime;
@@ -159,7 +165,7 @@
         public void onCompletion(RecordMetadata metadata, Exception exception) {
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (metadata != null) {
-                System.out.println("message(" + key + ", " + message
+                log.info("message(" + key + ", " + message
                         + ") sent to partition(" + metadata.partition() + "), "
                         + "offset(" + metadata.offset() + ") in " + elapsedTime
                         + " ms");
