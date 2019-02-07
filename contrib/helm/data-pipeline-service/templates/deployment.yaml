@@ -91,15 +91,3 @@ spec:
 
             command: ["/bin/sh"]
             args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSConsumer"]
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  labels:
-    app: {{ .Release.Namespace }}-{{ .Chart.Name }}
-  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-  namespace: {{ .Release.Namespace }}
-spec:
-  selector:
-    app: {{ .Release.Namespace }}-{{ .Chart.Name }}
