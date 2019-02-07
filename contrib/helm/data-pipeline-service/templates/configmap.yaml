@@ -6,7 +6,6 @@ metadata:
 data:
   SERVICE: {{ .Chart.Name }}
   VERSION: {{ .Chart.Version }}
-  PORT: {{ .Values.port | quote}}
   KAFKA_HOST: {{ .Release.Namespace }}-kafka:9092
 
   ROUTING: {{ .Release.Namespace }}-routing-service-car:5000
