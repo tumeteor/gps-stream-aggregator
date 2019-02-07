@@ -32,6 +32,9 @@ public class KafkaGPSConsumer {
     final static Match osrm_match = new Match(System.getenv("ROUTING"));
     private static final boolean RUNNING = true;
     private static final Object CONSUMER_GROUP = "gps-group";
+    /*
+     * bucket name must be at least 3 and no more than 63 characters long
+     */
     private static final String BUCKET_NAME = "gps-s3-bucket";
 
     private static Logger log = LoggerFactory.getLogger("DemoCallBack");
@@ -54,7 +57,7 @@ public class KafkaGPSConsumer {
          * create bucket in s3
          */
         try {
-            minio.make_bucket("");
+            minio.make_bucket(BUCKET_NAME);
             runMainLoop(consumer);
         } catch (MinioException e) {
             e.printStackTrace();
