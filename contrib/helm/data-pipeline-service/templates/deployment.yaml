@@ -103,6 +103,10 @@ metadata:
 spec:
   selector:
     app: {{ .Release.Namespace }}-{{ .Chart.Name }}
+  ports:
+  - protocol: TCP
+    name: http
+
 
 
 
