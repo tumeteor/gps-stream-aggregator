@@ -76,21 +76,21 @@
 
             envFrom:
             - configMapRef:
-                    name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+                  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
             args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
 
           - image: {{ .Values.image }}
-              name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
-              imagePullPolicy: Always
+            name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
+            imagePullPolicy: Always
 
-              envFrom:
-                - configMapRef:
-                    name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+            envFrom:
+            - configMapRef:
+                name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
-              command: ["/bin/sh"]
-              args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSConsumer"]
+            command: ["/bin/sh"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSConsumer"]
 
 
 
