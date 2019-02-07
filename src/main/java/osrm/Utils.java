@@ -3,6 +3,8 @@ package osrm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Utils {
@@ -62,6 +64,26 @@ public class Utils {
         String prettyJson = gson.toJson(json);
 
         return prettyJson;
+    }
+
+    /**
+     * Merge multiple json objects
+     * @param json1
+     * @param json2
+     * @return
+     */
+    public static JSONObject mergeJSONObjects(JSONObject json1, JSONObject json2) {
+        JSONObject mergedJSON = new JSONObject();
+        try {
+            mergedJSON = new JSONObject(json1, JSONObject.getNames(json1));
+            for (String crunchifyKey : JSONObject.getNames(json2)) {
+                mergedJSON.put(crunchifyKey, json2.get(crunchifyKey));
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException("JSON Exception" + e);
+        }
+        return mergedJSON;
     }
 
     public static void main (String[] args) {

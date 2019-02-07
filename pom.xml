@@ -118,6 +118,21 @@
             <version>1.7.25</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.minio/minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>5.0.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.spredfast.kafka.connect.s3/kafka-connect-s3 -->
+        <dependency>
+            <groupId>com.spredfast.kafka.connect.s3</groupId>
+            <artifactId>kafka-connect-s3</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+
 
     </dependencies>
 
