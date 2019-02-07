@@ -1,5 +1,6 @@
 image: registry.mobilityservices.io/am/roam/data-pipeline-service/develop:latest
 service: data-pipeline
+port: "5000"
 global:
   registry: registry.mobilityservices.io
   base_url: otonomousmobility.com
