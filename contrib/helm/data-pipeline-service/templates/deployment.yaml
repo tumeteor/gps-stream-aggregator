@@ -82,7 +82,6 @@
             args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
 
         
-
     kind: Service
     apiVersion: v1
     metadata:
