@@ -37,7 +37,7 @@ public class Match {
      */
     public JSONObject matchPoints(String coordinates) {
         String url = String.format(OSRM_SERVER + "/match/v1/car/%s?geometries=geojson&overview=full", coordinates);
-       
+
         return fetchResult(url);
     }
 
