@@ -60,13 +60,6 @@ spec:
                     key: secretkey
                     name: {{ .Release.Namespace }}-minio
 
-              - name: MINIO_ENDPOINT
-                value: {{ .Release.Namespace }}-minio
-
-              - name: MINIO_BUCKET
-                value: {{ .Release.Name }}-{{ .Chart.Name }}
-
-
             command: ["/bin/sh"]
             args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"]
 
