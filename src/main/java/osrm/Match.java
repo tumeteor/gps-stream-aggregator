@@ -12,13 +12,21 @@ import java.net.URI;
 
 public class Match {
 
-    final static String OSRM_SERVER = "http://0.0.0.0:5000";
+    String OSRM_SERVER = "http://0.0.0.0:5000";
 
     HttpClient httpClient;
 
     public Match() {
 
         httpClient = HttpClients.createDefault();
+    }
+
+    /**
+     * Constructor for online mode
+     * @param osrm_server: remote OSRM server instance
+     */
+    public Match(String osrm_server) {
+        this.OSRM_SERVER = osrm_server;
     }
 
     /**
@@ -29,7 +37,7 @@ public class Match {
      */
     public JSONObject matchPoints(String coordinates) {
         String url = String.format(OSRM_SERVER + "/match/v1/car/%s?geometries=geojson&overview=full", coordinates);
-        System.out.println(url);
+       
         return fetchResult(url);
     }
 

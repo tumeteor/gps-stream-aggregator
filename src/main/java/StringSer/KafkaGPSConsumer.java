@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class KafkaGPSConsumer {
 
-    final static Match osrm_match = new Match();
+    final static Match osrm_match = new Match(System.getenv("ROUTING"));
     private static final boolean RUNNING = true;
     private static final Object CONSUMER_GROUP = "gps-group";
     private static final String BUCKET_NAME = "gps-s3-bucket";
@@ -37,6 +37,7 @@ public class KafkaGPSConsumer {
     private static Logger log = LoggerFactory.getLogger("DemoCallBack");
 
     private static Minio minio = new Minio();
+
 
     public static void main(String[] args) {
         Properties props = new Properties();
