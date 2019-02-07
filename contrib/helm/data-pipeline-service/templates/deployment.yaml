@@ -1,80 +1,111 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: {{ .Release.Namespace }}-{{ .Chart.Name }}
-  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-  namespace: {{ .Release.Namespace }}
-spec:
-  # https://container-solutions.com/kubernetes-deployment-strategies/
-  replicas: {{ .Values.replicas }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-
-  revisionHistoryLimit: 1
-
-  selector:
-    matchLabels:
-      app: {{ .Release.Namespace }}-{{ .Chart.Name }}
-
-  template:
-    metadata:
-      # https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote}}
-      labels:
-        app: {{ .Release.Namespace }}-{{ .Chart.Name }}
-      name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-
-    spec:
-      imagePullSecrets:
-        - name: {{ .Values.global.registry }}
-
-      containers:
-        - image: {{ .Values.image }}
-          name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-          imagePullPolicy: Always
-
-          envFrom:
-          - configMapRef:
-              name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-
-          env:
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-
-
-          command: ["/bin/sh"]
-          args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"]
-
-        - image: {{ .Values.image }}
-          name: {{ .Release.Namespace }}-{{ .Chart.Name }}-aggregator
-          imagePullPolicy: Always
-
-          envFrom:
-          - configMapRef:
-                  name: {{ .Release.Namespace }}-{{ .Chart.Name }}
-
-          command: ["/bin/sh"]
-          args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
-
-
-
-  kind: Service
-  apiVersion: v1
+  apiVersion: apps/v1
+  kind: Deployment
   metadata:
     labels:
       app: {{ .Release.Namespace }}-{{ .Chart.Name }}
     name: {{ .Release.Namespace }}-{{ .Chart.Name }}
     namespace: {{ .Release.Namespace }}
   spec:
+    # https://container-solutions.com/kubernetes-deployment-strategies/
+    replicas: {{ .Values.replicas }}
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+
+    revisionHistoryLimit: 1
+
     selector:
-      app: {{ .Release.Namespace }}-{{ .Chart.Name }}
+      matchLabels:
+        app: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+    template:
+      metadata:
+        # https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change
+        annotations:
+          checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote}}
+        labels:
+          app: {{ .Release.Namespace }}-{{ .Chart.Name }}
+        name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+      spec:
+        imagePullSecrets:
+          - name: {{ .Values.global.registry }}
+
+        containers:
+          - image: {{ .Values.image }}
+            name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+            imagePullPolicy: Always
+
+            envFrom:
+            - configMapRef:
+                name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+            env:
+              - name: MY_POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+
+              - name: MINIO_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: accesskey
+                    name: {{ .Release.Namespace }}-minio
+
+              - name: MINIO_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: secretkey
+                    name: {{ .Release.Namespace }}-minio
+
+              - name: MINIO_ENDPOINT
+                value: {{ .Release.Namespace }}-minio
+
+              - name: MINIO_BUCKET
+                value: {{ .Release.Name }}-{{ .Chart.Name }}
+
+
+            command: ["/bin/sh"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"]
+
+          - image: {{ .Values.image }}
+            name: {{ .Release.Namespace }}-{{ .Chart.Name }}-aggregator
+            imagePullPolicy: Always
+
+            envFrom:
+            - configMapRef:
+                    name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+            command: ["/bin/sh"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
+
+          - image: {{ .Values.image }}
+              name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
+              imagePullPolicy: Always
+
+              envFrom:
+                - configMapRef:
+                    name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+
+              command: ["/bin/sh"]
+              args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSConsumer"]
+
+
+
+
+
+    kind: Service
+    apiVersion: v1
+    metadata:
+      labels:
+        app: {{ .Release.Namespace }}-{{ .Chart.Name }}
+      name: {{ .Release.Namespace }}-{{ .Chart.Name }}
+      namespace: {{ .Release.Namespace }}
+    spec:
+      selector:
+        app: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
 
 
