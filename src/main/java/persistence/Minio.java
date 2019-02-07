@@ -29,6 +29,8 @@ public class Minio {
 
         String accessKey = System.getenv("MINIO_ACCESS_KEY");
         String secretKey = System.getenv("MINIO_SECRET_KEY");
+        
+        log.debug("accessKey: " + accessKey);
 
         try {
             this.minioClient = new MinioClient(System.getenv("MINIO_ENDPOINT"), accessKey, secretKey);
