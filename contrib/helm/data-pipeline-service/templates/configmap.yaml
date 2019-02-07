@@ -7,13 +7,9 @@ data:
   SERVICE: {{ .Chart.Name }}
   VERSION: {{ .Chart.Version }}
   KAFKA_HOST: {{ .Release.Namespace }}-kafka:9092
-
   ROUTING: {{ .Release.Namespace }}-routing-service-car:5000
-  
   MINIO_BUCKET: {{ .Chart.Name }}
   MINIO_ENDPOINT: {{ .Release.Namespace }}-minio
-
-
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
   #NODE_ENV: "production"
   #URL: "https://{{ .Values.service }}.{{ .Release.Namespace }}.{{ .Values.global.base_url }}"
