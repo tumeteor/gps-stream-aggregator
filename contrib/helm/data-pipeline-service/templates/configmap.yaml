@@ -8,6 +8,8 @@ data:
   VERSION: {{ .Chart.Version }}
   KAFKA_HOST: {{ .Release.Namespace }}-kafka:9092
 
+  ROUTING: {{ .Release.Namespace }}-routing-service-car:5000
+
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
   #NODE_ENV: "production"
   #URL: "https://{{ .Values.service }}.{{ .Release.Namespace }}.{{ .Values.global.base_url }}"
