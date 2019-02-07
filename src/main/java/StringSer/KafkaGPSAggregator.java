@@ -19,7 +19,7 @@ public class KafkaGPSAggregator {
 
         Properties props = new Properties();
 
-        /**
+        /*
          *  Give the Streams application a unique name.  The name must be unique in the Kafka cluster
          *  against which the application is run.
          */
@@ -56,7 +56,7 @@ public class KafkaGPSAggregator {
 
 
     /***
-     *
+     * Parsing raw GPS tuple, SUBJECTIVE to change
      * @param tuple, in the form of vehicleID,lan,lon
      * @return
      */
@@ -67,6 +67,10 @@ public class KafkaGPSAggregator {
         return lon + "," + lat;
     }
 
+    /**
+     * Creating stream processor topology
+     * @return topology
+     */
     public Topology createTopology() {
         // Set up serializers and deserializers, which we will use for overriding the default serdes
         // specified above.
