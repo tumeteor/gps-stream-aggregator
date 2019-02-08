@@ -83,4 +83,4 @@ spec:
                 name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.consumer.KafkaGPSConsumerMinio"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.consumer.KafkaGPSConsumer"]
