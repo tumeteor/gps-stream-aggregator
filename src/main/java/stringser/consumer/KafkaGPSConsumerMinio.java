@@ -1,4 +1,4 @@
-package StringSer.consumer;
+package stringser.consumer;
 
 import io.minio.errors.MinioException;
 import org.apache.kafka.clients.consumer.CommitFailedException;
@@ -7,10 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParserException;
-import osrm.Match;
 import osrm.Utils;
 import persistence.Minio;
 
@@ -22,21 +19,13 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Iterator;
 
-public class KafkaGPSConsumer extends AbtractConsumer {
-
-    final static Match osrm_match = new Match(System.getenv("ROUTING"));
-
+public class KafkaGPSConsumerMinio extends AbtractConsumer {
     /*
      * bucket name must be at least 3 and no more than 63 characters long
      */
     private static final String BUCKET_NAME = "gps-s3-bucket";
 
-    private static Logger log = LoggerFactory.getLogger("DemoCallBack");
-
     private static Minio minio = new Minio();
-
-
-
 
     public static void main(String[] args) {
         try {
@@ -55,7 +44,7 @@ public class KafkaGPSConsumer extends AbtractConsumer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer();
+        KafkaGPSConsumerMinio gpsConsumer = new KafkaGPSConsumerMinio();
         gpsConsumer.run();
     }
 
@@ -94,10 +83,8 @@ public class KafkaGPSConsumer extends AbtractConsumer {
 
                                 // send to Minio
                                 minio.write_to_s3(BUCKET_NAME, new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), batchMm);
-
                             }
                         }
-
                     }
                 } catch (CommitFailedException e) {
                     // application specific failure handling
@@ -110,6 +97,4 @@ public class KafkaGPSConsumer extends AbtractConsumer {
             consumer.close();
         }
     }
-
-
 }

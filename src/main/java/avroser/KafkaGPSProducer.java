@@ -1,4 +1,4 @@
-package AvroSer;
+package avroser;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.commons.cli.*;
@@ -67,7 +67,7 @@ public class KafkaGPSProducer extends Thread {
         if (isAsync) { // Send asynchronously
             producer.send(
                     new ProducerRecord<>(topicName, key),
-                    new AvroSer.DemoCallBack(startTime, key, value));
+                    new avroser.DemoCallBack(startTime, key, value));
         } else { // Send synchronously
             try {
                 producer.send(

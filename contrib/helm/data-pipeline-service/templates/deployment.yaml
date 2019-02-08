@@ -61,7 +61,7 @@ spec:
                     name: {{ .Release.Namespace }}-minio
 
             command: ["/bin/sh"]
-            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSProducer -k True"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-aggregator
@@ -72,7 +72,7 @@ spec:
                   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSAggregator"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSAggregator"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
@@ -83,4 +83,4 @@ spec:
                 name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSConsumer"]
+            args: ["-c", "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.consumer.KafkaGPSConsumerMinio"]

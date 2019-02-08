@@ -1,4 +1,4 @@
-    package StringSer;
+    package stringser;
 
     import org.apache.commons.cli.*;
     import org.apache.kafka.clients.producer.Callback;

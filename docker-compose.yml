@@ -46,7 +46,7 @@ services:
     volumes:
       - .:/kafkamisc
     working_dir: /kafkamisc
-    command: /bin/bash -c "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar StringSer.KafkaGPSProducer -k True"
+    command: /bin/bash -c "mvn clean install && java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSProducer -k True"
     links:
       - kafka1
 

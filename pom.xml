@@ -196,7 +196,7 @@
                     <archive>
                         <manifest>
                             <addClasspath></addClasspath>
-                            <mainClass>StringSer.KafkaGPSProducer</mainClass>
+                            <mainClass>stringser.KafkaGPSProducer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

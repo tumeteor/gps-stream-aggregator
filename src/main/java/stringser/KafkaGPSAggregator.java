@@ -1,4 +1,4 @@
-package StringSer;
+package stringser;
 
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
