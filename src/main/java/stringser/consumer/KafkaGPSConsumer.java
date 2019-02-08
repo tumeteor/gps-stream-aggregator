@@ -11,7 +11,7 @@ import osrm.Utils;
 import java.time.Duration;
 import java.util.Iterator;
 
-public class KafkaGPSConsumer extends AbtractConsumer {
+public class KafkaGPSConsumer extends AbstractConsumer {
 
     public static void main(String[] args) {
         KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer();

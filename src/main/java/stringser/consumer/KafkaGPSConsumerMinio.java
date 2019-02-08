@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Iterator;
 
-public class KafkaGPSConsumerMinio extends AbtractConsumer {
+public class KafkaGPSConsumerMinio extends AbstractConsumer {
     /*
      * bucket name must be at least 3 and no more than 63 characters long
      */

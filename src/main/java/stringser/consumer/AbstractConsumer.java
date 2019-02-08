@@ -12,7 +12,7 @@ import osrm.Match;
 import java.util.Arrays;
 import java.util.Properties;
 
-public abstract class AbtractConsumer {
+public abstract class AbstractConsumer {
 
     protected static final boolean RUNNING = true;
     protected static final Object CONSUMER_GROUP = "gps-group";
@@ -38,6 +38,11 @@ public abstract class AbtractConsumer {
         runMainLoop(createConsumer());
     }
 
+    /**
+     * Abtract class to continuously listen to /
+     * and extract data from Kafka topic
+     * @param consumer
+     */
     abstract void runMainLoop(KafkaConsumer<String, String> consumer);
 
 
