@@ -1,14 +1,11 @@
-package StringSer;
+package StringSer.consumer;
 
 import io.minio.errors.MinioException;
 import org.apache.kafka.clients.consumer.CommitFailedException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.kstream.Windowed;
-import org.apache.kafka.streams.kstream.WindowedSerdes;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +19,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Properties;
 
-public class KafkaGPSConsumer {
+public class KafkaGPSConsumer extends AbtractConsumer {
 
     final static Match osrm_match = new Match(System.getenv("ROUTING"));
-    private static final boolean RUNNING = true;
-    private static final Object CONSUMER_GROUP = "gps-group";
+
     /*
      * bucket name must be at least 3 and no more than 63 characters long
      */
@@ -42,23 +36,14 @@ public class KafkaGPSConsumer {
     private static Minio minio = new Minio();
 
 
+
+
     public static void main(String[] args) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
-        props.put("group.id",  CONSUMER_GROUP);
-        props.put("kafka.topic"     , "gps-trace-output");
-
-        final Serde<Windowed<String>> windowedSerde = WindowedSerdes.timeWindowedSerdeFrom(String.class);
-        KafkaConsumer<String, String> consumer = new KafkaConsumer(props, windowedSerde.deserializer(), Serdes.String().deserializer());
-        consumer.subscribe(Arrays.asList(props.getProperty("kafka.topic")));
-        log.info("Subscribed to topic " + props.getProperty("kafka.topic"));
-
-        /*
-         * create bucket in s3
-         */
         try {
+            /*
+             * create bucket in s3
+             */
             minio.make_bucket(BUCKET_NAME);
-            runMainLoop(consumer);
         } catch (MinioException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -70,10 +55,11 @@ public class KafkaGPSConsumer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer();
+        gpsConsumer.run();
     }
 
-    static void runMainLoop(KafkaConsumer<String, String> consumer) {
+    void runMainLoop(KafkaConsumer<String, String> consumer) {
         try{
             while (RUNNING){
                 ConsumerRecords records = consumer.poll(Duration.ofMillis(3));
