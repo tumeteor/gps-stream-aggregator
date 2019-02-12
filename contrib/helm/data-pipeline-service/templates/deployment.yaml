@@ -72,7 +72,7 @@ spec:
                   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSAggregator"]
+            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSAggregator -Dorg.xerial.snappy.use.systemlib=true"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
