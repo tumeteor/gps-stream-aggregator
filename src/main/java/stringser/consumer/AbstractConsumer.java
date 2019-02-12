@@ -3,6 +3,7 @@ package stringser.consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.kstream.WindowedSerdes;
 import org.slf4j.Logger;
@@ -16,14 +17,18 @@ public abstract class AbstractConsumer {
 
     protected static final boolean RUNNING = true;
     protected static final Object CONSUMER_GROUP = "gps-group";
-    protected final static Match osrm_match = new Match(System.getenv("ROUTING"));
+    protected final static Match osrm_match = (System.getenv("ROUTING") != null)? new Match(System.getenv("ROUTING"))
+            : new Match();
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
 
     protected KafkaConsumer<String, String> createConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
+        if (System.getenv("KAFKA_HOST") != null)
+            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
+        else
+            props.put("bootstrap.servers", "localhost:9092");
         props.put("group.id",  CONSUMER_GROUP);
         props.put("kafka.topic"     , "gps-trace-output");
 

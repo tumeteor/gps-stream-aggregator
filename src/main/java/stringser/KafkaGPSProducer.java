@@ -8,10 +8,7 @@
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
 
-    import java.io.BufferedReader;
-    import java.io.IOException;
-    import java.io.InputStream;
-    import java.io.InputStreamReader;
+    import java.io.*;
     import java.util.Properties;
     import java.util.concurrent.ExecutionException;
 
@@ -123,7 +120,8 @@
 
             } catch (ParseException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch (EOFException e) {}
+              catch (IOException e) {
                 e.printStackTrace();
             } finally{
                 try {

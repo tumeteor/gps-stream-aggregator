@@ -27,7 +27,10 @@ public class KafkaGPSAggregator {
         props.put(StreamsConfig.CLIENT_ID_CONFIG, "GPS-trace-client");
 
         // Where to find Kafka broker(s).
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
+        if (System.getenv("KAFKA_HOST") != null)
+            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
+        else
+            props.put("bootstrap.servers", "localhost:9092");
         // Specify default (de)serializers for record keys and for record values.
 
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
@@ -78,7 +81,7 @@ public class KafkaGPSAggregator {
         // In the subsequent lines we define the processing topology of the Streams application.
         final StreamsBuilder builder = new StreamsBuilder();
         // Read the input Kafka topic into a KStream instance.
-        final KStream<String, String> gpsLines = builder.stream("my-topic", Consumed.with(stringSerde, stringSerde));
+        final KStream<String, String> gpsLines = builder.stream("gps-topic", Consumed.with(stringSerde, stringSerde));
         final Serde<Windowed<String>> windowedSerde = WindowedSerdes.timeWindowedSerdeFrom(String.class);
 
         gpsLines
