@@ -4,7 +4,7 @@ ADD . /kafkamisc
 WORKDIR /kafkamisc
 
 RUN mvn clean package
-RUN apk update \ apk add libc6-compat
+RUN apk update && apk add --no-cache libc6-compat
 
 #FROM openjdk:8
 #COPY --from=build kafkamisc/target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar
