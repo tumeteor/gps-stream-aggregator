@@ -6,10 +6,10 @@ WORKDIR /kafkamisc
 RUN mvn clean package
 RUN apk update && apk add --no-cache libc6-compat
 
-#FROM openjdk:8
-#COPY --from=build kafkamisc/target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar
+FROM 8-jdk-alpine
+COPY --from=build kafkamisc/target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar
 EXPOSE 9092:9092
-CMD java -cp target/kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSProducer -k True
+CMD java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSProducer -k True
 
 
 #FROM python:3.5
