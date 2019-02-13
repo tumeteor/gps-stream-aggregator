@@ -29,7 +29,7 @@ The map-matched data, in the basic form of "<vec_id, time_window, trace_metadata
 For offline mode, it is specifically for handling the scenario when the **base map is changed** - that is supposed to be a periodical behavior of base map providers 
 (i.e., HERE, Civil Map, OSM). The change of the base map does not (yet?) preserve the IDs (nodes, edges) of the previous version. In this case, the historical 
 map-matched data is obsoleted and becomes invalid with the new base map. Thus the historical GPS data will need to be re-map matched (in batch mode) to be ingested 
-into the traffic model for re-training / inference. In this case, with this desing, the routing service 
+into the traffic model for re-training / inference. In this case, with this design, the routing service 
 is in `pending mode`, and will wait for the whole process to be finished to be fed again with up-to-date traffic prediction.
 
 
