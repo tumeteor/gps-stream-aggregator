@@ -3,6 +3,7 @@ package osrm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +27,28 @@ public class Utils {
         }
         // dummy remove extra ; at the end
         return StringUtils.substring(result, 0, result.length() - 1);
+    }
+
+    /**
+     * Parse data to json
+     * @param raw: raw coordinates from the raw GPS data / SUBJECTIVE to change
+     * @return string json
+     */
+    public static String parseCoordinateJson(String raw) {
+        JSONObject json = new JSONObject();
+        JSONArray coordList = new JSONArray();
+        String[] coor_pairs = raw.split("\t|\\s+");
+        for (String coor_pair : coor_pairs) {
+            String[] _coor_pair = coor_pair.split(",");
+            Double lon = Double.parseDouble(_coor_pair[0]);
+            Double lat = Double.parseDouble(_coor_pair[1]);
+            JSONArray coord = new JSONArray();
+            coord.put(lon);
+            coord.put(lat);
+            coordList.put(coord);
+        }
+        json.put("coordinates", coordList);
+        return json.toString();
     }
 
     /**

@@ -75,7 +75,7 @@ public class KafkaGPSConsumerMinio extends AbstractConsumer {
 
                             log.info("start map-matching");
 
-                            JSONObject map_matched = osrm_match.matchPoints(Utils.parseCoordinate(record.value()));
+                            JSONObject map_matched = osrm_match.matchPointWithJson(Utils.parseCoordinate(record.value()));
                             if (map_matched != null){
                                 log.info(Utils.toPrettyFormat(map_matched));
                                 if (batchMm == null) batchMm = map_matched;
