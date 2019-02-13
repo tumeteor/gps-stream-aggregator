@@ -1,5 +1,12 @@
     package stringser;
 
+    import com.amazonaws.auth.AWSCredentials;
+    import com.amazonaws.auth.AWSStaticCredentialsProvider;
+    import com.amazonaws.auth.BasicAWSCredentials;
+    import com.amazonaws.services.s3.AmazonS3;
+    import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+    import com.amazonaws.services.s3.model.GetObjectRequest;
+    import com.amazonaws.services.s3.model.S3Object;
     import org.apache.commons.cli.*;
     import org.apache.kafka.clients.producer.Callback;
     import org.apache.kafka.clients.producer.KafkaProducer;
@@ -24,6 +31,8 @@
         private static final String topicName
                 = "gps-topic";
         public static final String fileName = "test_trajectories.csv";
+        private static final String BUCKET = "aws-acc-001-1053-r1-master-data-science";
+        private static final String BUCKET_KEY = "test_trajectories.csv";
 
         private final KafkaProducer<String, String> producer;
         private final Boolean isAsync;
@@ -77,6 +86,62 @@
             }
         }
 
+        /**
+         * Read sample file from S3
+         * @param bucketName
+         * @param key
+         * @param reader
+         * @throws IOException
+         */
+        public void readFromS3(String bucketName, String key, BufferedReader reader) throws IOException {
+            String accessKey = System.getenv("AWS_ACCESS_KEY_ID ");
+            String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+            AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+            AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+
+            S3Object s3object = s3Client.getObject(new GetObjectRequest(
+                    bucketName, key));
+
+            reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+            while (true) {
+                final String line = reader.readLine();
+                //TRICK to get the stream run continuously
+                //reset the stream
+                if (line == null) {
+                    reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+                    continue;
+                }
+                String[] tuple = line.split(",");
+                sendMessage(tuple[0], line);
+            }
+        }
+
+        /**
+         * Read sample file from local
+         * @param br
+         * @throws IOException
+         */
+        public void readFromLocal(BufferedReader br) throws IOException {
+            InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+
+            //Construct BufferedReader from InputStreamReader
+            br = new BufferedReader(new InputStreamReader(is));
+
+            while (true) {
+                final String line = br.readLine();
+                //TRICK to get the stream run continuously
+                //reset the stream
+                if (line == null) {
+                    is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+                    br = new BufferedReader(new InputStreamReader(is));
+                    continue;
+                }
+                String[] tuple = line.split(",");
+                sendMessage(tuple[0], line);
+
+            }
+        }
+
         public static void main(String [] args){
             Options options = new Options();
 
@@ -86,7 +151,6 @@
 
             CommandLineParser parser = new DefaultParser();
 
-            InputStream is;
             BufferedReader br = null;
 
             try {
@@ -94,34 +158,15 @@
                 KafkaGPSProducer producer;
                 if (cmd.getOptionValue("onK8S") == null) {
                     producer = new KafkaGPSProducer(topicName, false, false);
+                    producer.readFromLocal(br);
                 } else {
                     producer = new KafkaGPSProducer(topicName, false, true);
-                }
-
-                is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-
-                //Construct BufferedReader from InputStreamReader
-                br = new BufferedReader(new InputStreamReader(is));
-
-                while (true) {
-                    final String line = br.readLine();
-                    //TRICK to get the stream run continuously
-                    //reset the stream
-                    if (line == null) {
-                        is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-                        br = new BufferedReader(new InputStreamReader(is));
-                        continue;
-                    }
-
-                    String[] tuple = line.split(",");
-                    producer.sendMessage(tuple[0], line);
-
+                    producer.readFromS3(BUCKET, BUCKET_KEY, br);
                 }
 
             } catch (ParseException e) {
                 e.printStackTrace();
-            } catch (EOFException e) {}
-              catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally{
                 try {
