@@ -36,6 +36,7 @@
 
         private final KafkaProducer<String, String> producer;
         private final Boolean isAsync;
+        static BufferedReader br = null;
 
         private static Logger log = LoggerFactory.getLogger("KafkaGPSProducer");
 
@@ -90,10 +91,9 @@
          * Read sample file from S3
          * @param bucketName
          * @param key
-         * @param reader
          * @throws IOException
          */
-        public void readFromS3(String bucketName, String key, BufferedReader reader) throws IOException {
+        public void readFromS3(String bucketName, String key) throws IOException {
             String accessKey = System.getenv("AWS_ACCESS_KEY_ID ");
             String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
             AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
@@ -102,13 +102,13 @@
             S3Object s3object = s3Client.getObject(new GetObjectRequest(
                     bucketName, key));
 
-            reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+            br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
             while (true) {
-                final String line = reader.readLine();
+                final String line = br.readLine();
                 //TRICK to get the stream run continuously
                 //reset the stream
                 if (line == null) {
-                    reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+                    br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
                     continue;
                 }
                 String[] tuple = line.split(",");
@@ -118,10 +118,9 @@
 
         /**
          * Read sample file from local
-         * @param br
          * @throws IOException
          */
-        public void readFromLocal(BufferedReader br) throws IOException {
+        public void readFromLocal() throws IOException {
             InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
 
             //Construct BufferedReader from InputStreamReader
@@ -138,7 +137,6 @@
                 }
                 String[] tuple = line.split(",");
                 sendMessage(tuple[0], line);
-
             }
         }
 
@@ -151,17 +149,17 @@
 
             CommandLineParser parser = new DefaultParser();
 
-            BufferedReader br = null;
+
 
             try {
                 CommandLine cmd = parser.parse(options, args);
                 KafkaGPSProducer producer;
                 if (cmd.getOptionValue("onK8S") == null) {
                     producer = new KafkaGPSProducer(topicName, false, false);
-                    producer.readFromLocal(br);
+                    producer.readFromLocal();
                 } else {
                     producer = new KafkaGPSProducer(topicName, false, true);
-                    producer.readFromS3(BUCKET, BUCKET_KEY, br);
+                    producer.readFromS3(BUCKET, BUCKET_KEY);
                 }
 
             } catch (ParseException e) {
