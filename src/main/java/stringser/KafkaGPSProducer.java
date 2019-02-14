@@ -159,7 +159,8 @@
                     producer.readFromLocal();
                 } else {
                     producer = new KafkaGPSProducer(topicName, false, true);
-                    producer.readFromS3(BUCKET, BUCKET_KEY);
+                    //producer.readFromS3(BUCKET, BUCKET_KEY);
+                    producer.readFromLocal();
                 }
 
             } catch (ParseException e) {
