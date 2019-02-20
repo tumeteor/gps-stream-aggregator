@@ -77,7 +77,7 @@ public class Utils {
 
 
     /**
-     * Convert a JSON string to pretty print version
+     * Convert a JSONSE string to pretty print version
      * @param json
      * @return
      */
@@ -104,7 +104,7 @@ public class Utils {
             }
 
         } catch (JSONException e) {
-            throw new RuntimeException("JSON Exception" + e);
+            throw new RuntimeException("JSONSE Exception" + e);
         }
         return mergedJSON;
     }

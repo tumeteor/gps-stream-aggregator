@@ -2,23 +2,24 @@ package stringser.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 public class BaseProducer extends Thread {
-    protected KafkaProducer<String, String> producer;
+    protected KafkaProducer producer;
     protected static Boolean isAsync;
     protected static String topicName;
 
     public enum SERIALIZER {
-        JSON, STRINGSE
+        JSONSE, STRINGSE
     }
 
     SERIALIZER serializer;
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
     public BaseProducer(String topic, Boolean isAsync, Boolean onK8s, SERIALIZER serializer) {
         Properties props = new Properties();
@@ -38,7 +39,7 @@ public class BaseProducer extends Thread {
                 props.put("value.serializer",
                         "org.apache.kafka.common.serialization.StringSerializer");
                 break;
-            case JSON:
+            case JSONSE:
                 props.put("value.serializer",
                         "org.apache.kafka.connect.json.JsonSerializer");
                 break;
@@ -49,6 +50,26 @@ public class BaseProducer extends Thread {
     }
 
     public void sendMessage(String key, String value) {
+        long startTime = System.currentTimeMillis();
+        if (isAsync) { // Send asynchronously
+            producer.send(
+                    new ProducerRecord<>(topicName, key),
+                    new ProducerCallBack(startTime, key, value));
+        } else { // Send synchronously
+            try {
+                producer.send(
+                        new ProducerRecord<>(topicName, key, value))
+                        .get();
+                log.info("Sent message: (" + key + ", " + value + ")");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendMessage(String key, JSONObject value) {
         long startTime = System.currentTimeMillis();
         if (isAsync) { // Send asynchronously
             producer.send(

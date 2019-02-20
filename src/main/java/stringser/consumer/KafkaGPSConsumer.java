@@ -36,7 +36,7 @@ public class KafkaGPSConsumer extends AbstractConsumer {
                         log.info(String.format("Topic - %s, Partition - %d, Key: %s, Value: %s", record.topic(), record.partition(),
                                 record.key(), record.value()));
                         /*
-                         * Concatenate map-matched results in JSON
+                         * Concatenate map-matched results in JSONSE
                          * for batch-persistence
                          */
                         if (record != null) {

@@ -40,7 +40,7 @@ public class Match {
      * Snaps the supplied coordinates to the road network, and returns the most likely route given the points.
      *
      * @param coordinates The string containing comma separated lon/lat. Multiple coordinate pairs are separated by a semicolon.
-     * @return A JSON object containing the response code, an array of waypoint objects, and an array of route objects.
+     * @return A JSONSE object containing the response code, an array of waypoint objects, and an array of route objects.
      */
     public JSONObject matchPoints(String coordinates) {
         String url = String.format(OSRM_SERVER + "/match/v1/car/%s?geometries=geojson&overview=full", coordinates);
@@ -54,7 +54,7 @@ public class Match {
      *
      * @param coordinates The string containing comma separated lon/lat. Multiple coordinate pairs are separated by a semicolon.
      * @param profile     The mode of travel. Valid values are 'car', 'bike' and 'foot'.
-     * @return A JSON object containing the response code, an array of waypoint objects, and an array of route objects.
+     * @return A JSONSE object containing the response code, an array of waypoint objects, and an array of route objects.
      */
     public JSONObject matchPoints(String coordinates, String profile) {
         String url = String.format(OSRM_SERVER + "/match/v1/%s/%s?geometries=geojson&overview=full", profile, coordinates);

@@ -40,11 +40,12 @@ public class KafkaGPSProducer extends BaseProducer {
      * @throws IOException
      */
     public void readFromS3(String bucketName, String key) throws IOException {
-        String accessKey = System.getenv("AWS_ACCEProducerSS_KEY_ID ");
-        String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+        String accessKey = System.getenv("aws_access_key_id");
+        String secretKey = System.getenv("aws_secret_access_key");
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
 
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+        log.info("Accessed to s3 region: " + s3Client.getRegionName());
         S3Object s3object = s3Client.getObject(new GetObjectRequest(
                 bucketName, key));
 
@@ -67,7 +68,6 @@ public class KafkaGPSProducer extends BaseProducer {
      * @throws IOException
      */
     public void readFromLocal() throws IOException {
-        System.out.println("Start reading");
         InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
 
         //Construct BufferedReader from InputStreamReader
@@ -100,9 +100,11 @@ public class KafkaGPSProducer extends BaseProducer {
             KafkaGPSProducer producer;
             if (cmd.getOptionValue("onK8S") == null) {
                 producer = new KafkaGPSProducer("gps-topic", false, false, SERIALIZER.STRINGSE);
-                producer.readFromLocal();
+                producer.log.info("reading from S3");
+                producer.readFromS3(BUCKET, BUCKET_KEY);
             } else {
                 producer = new KafkaGPSProducer("gps-topic", false, true, SERIALIZER.STRINGSE);
+                producer.log.info("reading from local");
                 producer.readFromS3(BUCKET, BUCKET_KEY);
             }
 

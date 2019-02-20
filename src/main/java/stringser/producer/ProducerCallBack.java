@@ -9,10 +9,10 @@ public class ProducerCallBack implements Callback {
 
     private long startTime;
     private Object key;
-    private String message;
+    private Object message;
     private static Logger log = LoggerFactory.getLogger("DemoCallBack");
 
-    public ProducerCallBack(long startTime, Object key, String message) {
+    public ProducerCallBack(long startTime, Object key, Object message) {
         this.startTime = startTime;
         this.key = key;
         this.message = message;
