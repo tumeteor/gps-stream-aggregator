@@ -7,11 +7,16 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.json.JSONObject;
 import osrm.Utils;
+import stringser.producer.BaseProducer;
 
 import java.time.Duration;
 import java.util.Iterator;
 
+import static stringser.producer.BaseProducer.SERIALIZER.STRINGSE;
+
 public class KafkaGPSConsumer extends AbstractConsumer {
+
+    BaseProducer producer = new BaseProducer("mm-topic", false, (System.getenv("KAFKA_HOST") != null), STRINGSE);
 
     public static void main(String[] args) {
         KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer();
@@ -48,6 +53,7 @@ public class KafkaGPSConsumer extends AbstractConsumer {
                             if (map_matched != null){
                                 log.info(Utils.toPrettyFormat(map_matched));
                             }
+                            producer.sendMessage(record.key().toString(), map_matched.toString());
                         }
                     }
                 } catch (CommitFailedException e) {
