@@ -129,6 +129,14 @@
             <version>1.11.497</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.sourcelab/kafka-connect-client -->
+        <dependency>
+            <groupId>org.sourcelab</groupId>
+            <artifactId>kafka-connect-client</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <repositories>
@@ -191,7 +199,7 @@
                     <archive>
                         <manifest>
                             <addClasspath></addClasspath>
-                            <mainClass>stringser.KafkaGPSProducer</mainClass>
+                            <mainClass>stringser.producer.KafkaGPSProducer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
