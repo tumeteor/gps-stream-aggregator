@@ -31,7 +31,6 @@ public class KafkaGPSConsumer extends AbstractConsumer {
         try{
             while (RUNNING){
                 ConsumerRecords records = consumer.poll(Duration.ofMillis(3));
-                log.info("number of records: " + records.count());
                 Iterator<ConsumerRecord<Windowed<String>, String>> recordItr = records.iterator();
 
                 try {

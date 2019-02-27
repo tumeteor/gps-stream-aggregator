@@ -32,8 +32,26 @@ public abstract class BaseAggregator<T> {
 
     }
 
+    /**
+     *
+     * @param inTopic
+     * @param outTopic
+     * @return
+     */
     public abstract Topology createTopology(String inTopic, String outTopic);
+
+    /**
+     * Parsing message tuple for aggregation
+     * @param tuple
+     * @return
+     */
     public abstract String parseTuple(T tuple);
+
+    /**
+     * Sanity checking incoming messages
+     * @param tuple
+     * @return
+     */
     public abstract Boolean isValidMessage(T tuple);
 
     public void run(String inTopic, String outTopic) {
@@ -44,15 +62,15 @@ public abstract class BaseAggregator<T> {
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
         // Update:
-        // print the topology every 10 seconds for learning purposes
-//        while(true){
-//            streams.localThreadsMetadata().forEach(data -> System.out.println(data));
-//            try {
-//                Thread.sleep(5000);
-//            } catch (InterruptedException e) {
-//                break;
-//            }
-//        }
+        // print the topology every 10 seconds for tracing purposes
+        while(true){
+            streams.localThreadsMetadata().forEach(data -> System.out.println(data));
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
     }
 
 

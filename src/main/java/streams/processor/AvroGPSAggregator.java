@@ -59,8 +59,6 @@ public class AvroGPSAggregator extends BaseAggregator<GenericRecord> {
 
         gpsLines.filter((key, value) -> isValidMessage(value))
                 .mapValues(v -> parseTuple(v))
-                // flatmap values (geo loc), split by tab
-//                .flatMapValues(textLine -> Arrays.asList(textLine.split("\t")))
                 // group by key (vehicle ID) before aggregation
                 .groupByKey()
                 .windowedBy(TimeWindows.of(SIZE_MS).until(SIZE_MS))
