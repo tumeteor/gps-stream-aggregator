@@ -39,10 +39,7 @@ public class KafkaGPSConsumer extends AbstractConsumer {
                         ConsumerRecord<Windowed<String>, String> record = recordItr.next();
                         log.info(String.format("Topic - %s, Partition - %d, Key: %s, Value: %s", record.topic(), record.partition(),
                                 record.key(), record.value()));
-                        /*
-                         * Concatenate map-matched results in JSONSE
-                         * for batch-persistence
-                         */
+
                         if (record != null) {
                             /*
                              * send data to OSRM for map-matching
