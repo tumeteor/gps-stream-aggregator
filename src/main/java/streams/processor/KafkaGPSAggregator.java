@@ -1,62 +1,20 @@
-package stringser;
+package streams.processor;
 
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 
-import java.util.Arrays;
-import java.util.Properties;
+public class KafkaGPSAggregator extends BaseAggregator<String> {
 
-public class KafkaGPSAggregator {
-
-    private static final long SIZE_MS = 3 * 60;
-
-    public static void main (String[] args) {
-
-        Properties props = new Properties();
-
-        /*
-         *  Give the Streams application a unique name.  The name must be unique in the Kafka cluster
-         *  against which the application is run.
-         */
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "GPS-trace-app");
-        props.put(StreamsConfig.CLIENT_ID_CONFIG, "GPS-trace-client");
-
-        // Where to find Kafka broker(s).
-        if (System.getenv("KAFKA_HOST") != null)
-            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
-        else
-            props.put("bootstrap.servers", "localhost:9092");
-        // Specify default (de)serializers for record keys and for record values.
-
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+    public KafkaGPSAggregator() {
+        super();
+        // Specify default (de)serializers for record values of String
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        KafkaGPSAggregator aggProcessor = new KafkaGPSAggregator();
-
-        KafkaStreams streams = new KafkaStreams(aggProcessor.createTopology(), props);
-        streams.start();
-
-
-        // shutdown hook to correctly close the streams application
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
-
-        // Update:
-        // print the topology every 10 seconds for learning purposes
-        while(true){
-            streams.localThreadsMetadata().forEach(data -> System.out.println(data));
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
     }
-
 
     /***
      * Parsing raw GPS tuple, SUBJECTIVE to change
@@ -70,24 +28,29 @@ public class KafkaGPSAggregator {
         return lon + "," + lat;
     }
 
+    @Override
+    public Boolean isValidMessage(String tuple) {
+        return (tuple.split(",").length == 4);
+    }
+
     /**
      * Creating stream processor topology
      * @return topology
      */
-    public Topology createTopology() {
+    public Topology createTopology(String inTopic, String outTopic) {
         // Set up serializers and deserializers, which we will use for overriding the default serdes
         // specified above.
         final Serde<String> stringSerde = Serdes.String();
         // In the subsequent lines we define the processing topology of the Streams application.
         final StreamsBuilder builder = new StreamsBuilder();
         // Read the input Kafka topic into a KStream instance.
-        final KStream<String, String> gpsLines = builder.stream("gps-topic", Consumed.with(stringSerde, stringSerde));
+        final KStream<String, String> gpsLines = builder.stream(inTopic, Consumed.with(stringSerde, stringSerde));
         final Serde<Windowed<String>> windowedSerde = WindowedSerdes.timeWindowedSerdeFrom(String.class);
 
-        gpsLines
+        gpsLines.filter((key, value) -> isValidMessage(value))
                 .mapValues(v -> parseTuple(v))
                 // flatmap values (geo loc), split by tab
-                .flatMapValues(textLine -> Arrays.asList(textLine.split("\t")))
+                //.flatMapValues(textLine -> Arrays.asList(textLine.split("\t")))
                 // group by key (vehicle ID) before aggregation
                 .groupByKey()
                 .windowedBy(TimeWindows.of(SIZE_MS).until(SIZE_MS))
@@ -104,8 +67,13 @@ public class KafkaGPSAggregator {
 
                     }
                 })
-                .toStream().to("gps-trace-output", Produced.with(windowedSerde, Serdes.String()));
+                .toStream().to(outTopic, Produced.with(windowedSerde, Serdes.String()));
 
         return builder.build();
+    }
+
+    public static void main (String[] args) {
+        KafkaGPSAggregator aggregator = new KafkaGPSAggregator();
+        aggregator.run("gps-topic1", "gps-trace-output1");
     }
 }

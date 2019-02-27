@@ -1,0 +1,8 @@
+{"namespace": "das.gps.avro",
+  "type": "record",
+  "name": "Trace",
+  "fields": [
+    {"name": "bookingid", "type": "string"},
+    {"name": "trace",  "type": "string"}
+  ]
+}

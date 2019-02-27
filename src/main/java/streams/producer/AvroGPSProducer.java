@@ -1,4 +1,4 @@
-package stringser.producer;
+package streams.producer;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -7,12 +7,16 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import streams.Probe;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Simulation of a GPS producer that continuously send GPS data
@@ -20,17 +24,38 @@ import java.io.InputStreamReader;
  * The stream is sent does not strictly (or at all) follow the timestamp in this
  * simulator.
  */
+public class AvroGPSProducer extends BaseTextProducer<GenericRecord> {
 
-public class KafkaGPSProducer extends BaseProducer {
+    public AvroGPSProducer(String topic, Boolean isAsync, Boolean onK8s) {
+        super(topic, isAsync, onK8s, SERIALIZER.AVROSE);
+    }
 
-    public static final String fileName = "test_trajectories.csv";
-    private static final String BUCKET = "aws-acc-001-1053-r1-master-data-science";
-    private static final String BUCKET_KEY = "test_trajectories.csv";
-
-    static BufferedReader br = null;
-
-    public KafkaGPSProducer(String topic, Boolean isAsync, Boolean onK8s, SERIALIZER serializer) {
-        super(topic, isAsync, onK8s, serializer);
+    @Override
+    /**
+     * A method to send message (key, value) to Kafka
+     * @param key
+     *        the key is in String type
+     * @param value
+     *        the value is in String type
+     */
+    public void sendMessage(String key, GenericRecord value) {
+        long startTime = System.currentTimeMillis();
+        if (isAsync) { // Send asynchronously
+            producer.send(
+                    new ProducerRecord<>(topicName, key),
+                    new ProducerCallBack(startTime, key, value));
+        } else { // Send synchronously
+            try {
+                producer.send(
+                        new ProducerRecord<>(topicName, key, value))
+                        .get();
+                log.info("Sent message: (" + key + ", " + value.toString() + ")");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -59,7 +84,14 @@ public class KafkaGPSProducer extends BaseProducer {
                 continue;
             }
             String[] tuple = line.split(",");
-            sendMessage(tuple[0], line);
+
+            GenericRecord probe = new GenericData.Record(loadAvroSchema());
+            probe.put(Probe.KEY, tuple[0]);
+            probe.put(Probe.LAT, Double.parseDouble(tuple[1]));
+            probe.put(Probe.LON, Double.parseDouble(tuple[2]));
+            probe.put(Probe.TS, tuple[3]);
+
+            sendMessage(tuple[0], probe);
         }
     }
 
@@ -83,9 +115,34 @@ public class KafkaGPSProducer extends BaseProducer {
                 continue;
             }
             String[] tuple = line.split(",");
-            sendMessage(tuple[0], line);
+            log.info(line);
+
+            GenericRecord probe = new GenericData.Record(loadAvroSchema());
+            probe.put(Probe.KEY, tuple[0]);
+            probe.put(Probe.LAT, Double.parseDouble(tuple[1]));
+            probe.put(Probe.LON, Double.parseDouble(tuple[2]));
+            probe.put(Probe.TS, tuple[3]);
+
+            sendMessage(tuple[0], probe);
         }
     }
+
+    public Schema loadAvroSchema() throws IOException {
+        // avro schema avsc file path.
+        String schemaPath = "/avro/Probe.avsc";
+        // avsc json string.
+        String schemaString = null;
+
+        InputStream inputStream = this.getClass().getResourceAsStream(schemaPath);
+        try {
+            schemaString = IOUtils.toString(inputStream, "UTF-8");
+        } finally {
+            inputStream.close();
+        }
+        // avro schema.
+        return new Schema.Parser().parse(schemaString);
+    }
+
 
     public static void main(String [] args){
         Options options = new Options();
@@ -93,18 +150,22 @@ public class KafkaGPSProducer extends BaseProducer {
         Option isOnK8s = new Option("k", "onK8S", true, "on K8S mode");
         isOnK8s.setRequired(false);
         options.addOption(isOnK8s);
+
         CommandLineParser parser = new DefaultParser();
+
+        InputStream is;
+        BufferedReader br = null;
 
         try {
             CommandLine cmd = parser.parse(options, args);
-            KafkaGPSProducer producer;
+            AvroGPSProducer producer;
             if (cmd.getOptionValue("onK8S") == null) {
-                producer = new KafkaGPSProducer("gps-topic", false, false, SERIALIZER.STRINGSE);
-                producer.log.info("reading from S3");
-                producer.readFromS3(BUCKET, BUCKET_KEY);
-            } else {
-                producer = new KafkaGPSProducer("gps-topic", false, true, SERIALIZER.STRINGSE);
+                producer = new AvroGPSProducer("probe-avro2", false, false);
                 producer.log.info("reading from local");
+                producer.readFromLocal();
+            } else {
+                producer = new AvroGPSProducer("probe-avro2", false, true);
+                producer.log.info("reading from S3");
                 producer.readFromS3(BUCKET, BUCKET_KEY);
             }
 
@@ -112,12 +173,6 @@ public class KafkaGPSProducer extends BaseProducer {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally{
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
     }

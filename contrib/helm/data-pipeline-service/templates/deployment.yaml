@@ -61,7 +61,7 @@ spec:
                     name: {{ .Release.Namespace }}-minio
 
             command: ["/bin/sh"]
-            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.producer.KafkaGPSProducer -k True"]
+            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar streams.producer.AvroGPSProducer -k True"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-aggregator
@@ -72,7 +72,7 @@ spec:
                   name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.KafkaGPSAggregator -Dorg.xerial.snappy.use.systemlib=true"]
+            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar streams.AvroGPSAggregator -Dorg.xerial.snappy.use.systemlib=true"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-consumer
@@ -83,7 +83,7 @@ spec:
                 name: {{ .Release.Namespace }}-{{ .Chart.Name }}
 
             command: ["/bin/sh"]
-            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar stringser.consumer.KafkaGPSConsumer"]
+            args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar streams.consumer.KafkaGPSConsumer"]
 
           - image: {{ .Values.image }}
             name: {{ .Release.Namespace }}-{{ .Chart.Name }}-kafka-sink

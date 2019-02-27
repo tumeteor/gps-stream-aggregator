@@ -1,4 +1,4 @@
-package stringser.producer;
+package streams.producer;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;

@@ -2,11 +2,13 @@ package osrm;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
@@ -93,9 +95,9 @@ public class Match {
         StringBuffer result = new StringBuffer();
         httpPost.setEntity(new StringEntity(jsonData));
         httpPost.addHeader("accept", "application/json");
-//        httpPost.addHeader(BasicScheme.authenticate(
-//                new UsernamePasswordCredentials("NGUYTU3", "Twig285ache743#"),
-//                "UTF-8", false));
+        httpPost.addHeader(BasicScheme.authenticate(
+                new UsernamePasswordCredentials("NGUYTU3", "Twig285ache743#"),
+                "UTF-8", false));
         HttpClient client = HttpClientBuilder.create().build();
 
 
@@ -112,9 +114,9 @@ public class Match {
             URI uri = builder.build();
             HttpGet request = new HttpGet(uri);
             request.addHeader("accept", "application/json");
-//            request.addHeader(BasicScheme.authenticate(
-//                    new UsernamePasswordCredentials("NGUYTU3", "Twig285ache743#"),
-//                    "UTF-8", false));
+            request.addHeader(BasicScheme.authenticate(
+                    new UsernamePasswordCredentials("NGUYTU3", "Twig285ache743#"),
+                    "UTF-8", false));
             HttpResponse response = httpClient.execute(request);
             result = new JSONObject(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
         } catch (Exception e) {

@@ -102,10 +102,29 @@
             <version>1.4</version>
         </dependency>
 
+        <!-- Dependencies below are required/recommended only when using Apache Avro. -->
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
-            <version>3.1.1</version>
+            <version>5.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-avro-serde</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-maven-plugin</artifactId>
+            <version>1.8.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.minio/minio -->
@@ -199,7 +218,7 @@
                     <archive>
                         <manifest>
                             <addClasspath></addClasspath>
-                            <mainClass>stringser.producer.KafkaGPSProducer</mainClass>
+                            <mainClass>streams.producer.AvroGPSProducer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

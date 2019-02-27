@@ -1,4 +1,4 @@
-package stringser.consumer;
+package streams.consumer;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Serde;
@@ -21,6 +21,11 @@ public abstract class AbstractConsumer {
             : new Match();
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected static String kafka_topic;
+
+    public AbstractConsumer(String kafka_topic) {
+        this.kafka_topic = kafka_topic;
+    }
 
 
     protected KafkaConsumer<String, String> createConsumer() {
@@ -30,8 +35,7 @@ public abstract class AbstractConsumer {
         else
             props.put("bootstrap.servers", "localhost:9092");
         props.put("group.id",  CONSUMER_GROUP);
-        props.put("kafka.topic"     , "gps-trace-output");
-
+        props.put("kafka.topic"     , kafka_topic);
         final Serde<Windowed<String>> windowedSerde = WindowedSerdes.timeWindowedSerdeFrom(String.class);
         KafkaConsumer<String, String> consumer = new KafkaConsumer(props, windowedSerde.deserializer(), Serdes.String().deserializer());
         consumer.subscribe(Arrays.asList(props.getProperty("kafka.topic")));

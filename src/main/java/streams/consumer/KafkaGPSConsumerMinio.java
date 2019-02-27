@@ -1,25 +1,54 @@
-package stringser.consumer;
+package streams.consumer;
 
+import io.minio.errors.MinioException;
 import org.apache.kafka.clients.consumer.CommitFailedException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 import osrm.Utils;
-import stringser.producer.BaseProducer;
+import persistence.Minio;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Iterator;
 
-import static stringser.producer.BaseProducer.SERIALIZER.STRINGSE;
+public class KafkaGPSConsumerMinio extends AbstractConsumer {
+    /*
+     * bucket name must be at least 3 and no more than 63 characters long
+     */
+    private static final String BUCKET_NAME = "gps-s3-bucket";
 
-public class KafkaGPSConsumer extends AbstractConsumer {
+    private static Minio minio = new Minio();
 
-    BaseProducer producer = new BaseProducer("mm-topic", false, (System.getenv("KAFKA_HOST") != null), STRINGSE);
+    public KafkaGPSConsumerMinio(String kafka_topic) {
+        super(kafka_topic);
+    }
 
     public static void main(String[] args) {
-        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer();
+        try {
+            /*
+             * create bucket in s3
+             */
+            minio.make_bucket(BUCKET_NAME);
+        } catch (MinioException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        KafkaGPSConsumerMinio gpsConsumer = new KafkaGPSConsumerMinio("gps-trace-output");
         gpsConsumer.run();
     }
 
@@ -39,6 +68,7 @@ public class KafkaGPSConsumer extends AbstractConsumer {
                          * Concatenate map-matched results in JSONSE
                          * for batch-persistence
                          */
+                        JSONObject batchMm = null;
                         if (record != null) {
                             /*
                              * send data to OSRM for map-matching
@@ -52,8 +82,12 @@ public class KafkaGPSConsumer extends AbstractConsumer {
                             JSONObject map_matched = osrm_match.matchPointWithJson(Utils.parseCoordinate(record.value()));
                             if (map_matched != null){
                                 log.info(Utils.toPrettyFormat(map_matched));
+                                if (batchMm == null) batchMm = map_matched;
+                                else batchMm = Utils.mergeJSONObjects(batchMm, map_matched);
+
+                                // send to Minio
+                                minio.write_to_s3(BUCKET_NAME, new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), batchMm);
                             }
-                            producer.sendMessage(record.key().toString(), map_matched.toString());
                         }
                     }
                 } catch (CommitFailedException e) {

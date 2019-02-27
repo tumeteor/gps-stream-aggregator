@@ -11,6 +11,8 @@ data:
   ROUTING: {{ .Release.Namespace }}-routing-service-car:5000
   MINIO_BUCKET: {{ .Chart.Name }}
   MINIO_ENDPOINT: {{ .Release.Namespace }}-minio:9000
+  SCHEMA_REGISTRY_HOST: {{ .Release.Namespace }}-kafka-cp-schema-registry:8081
+
 
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
   #NODE_ENV: "production"

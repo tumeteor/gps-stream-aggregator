@@ -37,7 +37,7 @@ public class Utils {
     public static String parseCoordinateJson(String raw) {
         JSONObject json = new JSONObject();
         JSONArray coordList = new JSONArray();
-        String[] coor_pairs = raw.split("\t|\\s+");
+        String[] coor_pairs = raw.split("\t|\\s+|\\;");
         for (String coor_pair : coor_pairs) {
             String[] _coor_pair = coor_pair.split(",");
             Double lon = Double.parseDouble(_coor_pair[0]);
@@ -59,7 +59,7 @@ public class Utils {
      */
     public static String dummyParseCoordinate(String raw) {
         String result = "";
-        String[] coor_pairs = raw.split("\t|\\s+");
+        String[] coor_pairs = raw.split("\t|\\s+|\\;");
         int limit_length = 5;
         int idx = 0;
         for (String coor_pair : coor_pairs) {

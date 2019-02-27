@@ -1,0 +1,10 @@
+{"namespace": "das.gps.avro",
+  "type": "record",
+  "name": "Probe",
+  "fields": [
+    {"name": "bookingid", "type": "string"},
+    {"name": "coordinatelatitude",  "type": "double"},
+    {"name": "coordinatelongitude",  "type": "double"},
+    {"name": "eventtime",  "type" : "string"}
+  ]
+}
