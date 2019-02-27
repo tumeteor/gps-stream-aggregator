@@ -8,7 +8,7 @@ data:
   VERSION: {{ .Chart.Version }}
   KAFKA_HOST: {{ .Release.Namespace }}-kafka-cp-kafka:9092
   KAFKA_CONNECT_HOST: {{ .Release.Namespace }}-kafka-cp-kafka-connect:8083
-  ROUTING: {{ .Release.Namespace }}-routing-service-car:5000
+  ROUTING: http://{{ .Release.Namespace }}-routing-service-car:5000
   MINIO_BUCKET: {{ .Chart.Name }}
   MINIO_ENDPOINT: {{ .Release.Namespace }}-minio:9000
   SCHEMA_REGISTRY_HOST: http://{{ .Release.Namespace }}-kafka-cp-schema-registry:8081
