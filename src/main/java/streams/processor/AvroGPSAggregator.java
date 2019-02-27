@@ -83,6 +83,6 @@ public class AvroGPSAggregator extends BaseAggregator<GenericRecord> {
 
     public static void main (String[] args) {
         AvroGPSAggregator agg = new AvroGPSAggregator();
-        agg.run("probe-avro2", "gps-trace-output");
+        agg.run("probe-avro", "gps-trace-output");
     }
 }

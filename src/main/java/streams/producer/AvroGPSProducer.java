@@ -160,11 +160,11 @@ public class AvroGPSProducer extends BaseTextProducer<GenericRecord> {
             CommandLine cmd = parser.parse(options, args);
             AvroGPSProducer producer;
             if (cmd.getOptionValue("onK8S") == null) {
-                producer = new AvroGPSProducer("probe-avro2", false, false);
+                producer = new AvroGPSProducer("probe-avro", false, false);
                 producer.log.info("reading from local");
                 producer.readFromLocal();
             } else {
-                producer = new AvroGPSProducer("probe-avro2", false, true);
+                producer = new AvroGPSProducer("probe-avro", false, true);
 //                producer.log.info("reading from S3");
 //                producer.readFromS3(BUCKET, BUCKET_KEY);
                 producer.log.info("reading from local");
