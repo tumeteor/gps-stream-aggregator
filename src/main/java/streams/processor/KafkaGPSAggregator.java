@@ -71,6 +71,6 @@ public class KafkaGPSAggregator extends BaseAggregator<String> {
 
     public static void main (String[] args) {
         KafkaGPSAggregator aggregator = new KafkaGPSAggregator();
-        aggregator.run("gps-topic1", "gps-trace-output1");
+        aggregator.run("gps-topic", "gps-trace-output");
     }
 }

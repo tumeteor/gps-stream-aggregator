@@ -23,7 +23,7 @@ public class KafkaGPSConsumer extends AbstractConsumer {
     }
 
     public static void main(String[] args) {
-        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer("gps-trace-output1");
+        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer("gps-trace-output");
         gpsConsumer.run();
     }
 
