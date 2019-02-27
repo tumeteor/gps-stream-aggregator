@@ -4,6 +4,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import streams.config.ConfigVars;
 
 import java.util.Properties;
 
@@ -22,8 +23,8 @@ public abstract class BaseAggregator<T> {
         props.put(StreamsConfig.CLIENT_ID_CONFIG, "GPS-trace-client");
 
         // Where to find Kafka broker(s).
-        if (System.getenv("KAFKA_HOST") != null)
-            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
+        if (System.getenv(ConfigVars.KAFKA_HOST) != null)
+            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv(ConfigVars.KAFKA_HOST));
         else
             props.put("bootstrap.servers", "localhost:9092");
         // Specify default (de)serializers for record keys and for record values.

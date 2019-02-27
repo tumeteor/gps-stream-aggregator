@@ -9,6 +9,7 @@ import org.apache.kafka.streams.kstream.WindowedSerdes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import osrm.Match;
+import streams.config.ConfigVars;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -30,8 +31,8 @@ public abstract class AbstractConsumer {
 
     protected KafkaConsumer<String, String> createConsumer() {
         Properties props = new Properties();
-        if (System.getenv("KAFKA_HOST") != null)
-            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_HOST"));
+        if (System.getenv(ConfigVars.KAFKA_HOST) != null)
+            props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv(ConfigVars.KAFKA_HOST));
         else
             props.put("bootstrap.servers", "localhost:9092");
         props.put("group.id",  CONSUMER_GROUP);

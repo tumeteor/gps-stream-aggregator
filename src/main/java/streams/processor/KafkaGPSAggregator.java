@@ -6,6 +6,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
+import streams.config.ConfigVars;
 
 public class KafkaGPSAggregator extends BaseAggregator<String> {
 
@@ -71,6 +72,6 @@ public class KafkaGPSAggregator extends BaseAggregator<String> {
 
     public static void main (String[] args) {
         KafkaGPSAggregator aggregator = new KafkaGPSAggregator();
-        aggregator.run("gps-topic", "gps-trace-output");
+        aggregator.run(ConfigVars.STRG_TOPIC_GPS_PRODUCER, ConfigVars.STRG_TOPIC_GPS_AGG);
     }
 }

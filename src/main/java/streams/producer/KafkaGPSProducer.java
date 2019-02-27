@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import streams.config.ConfigVars;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,11 +42,11 @@ public class KafkaGPSProducer extends BaseTextProducer<String> {
             CommandLine cmd = parser.parse(options, args);
             KafkaGPSProducer producer;
             if (cmd.getOptionValue("onK8S") == null) {
-                producer = new KafkaGPSProducer("gps-topic1", false, false);
+                producer = new KafkaGPSProducer(ConfigVars.STRG_TOPIC_GPS_PRODUCER, false, false);
                 producer.log.info("reading from local");
                 producer.readFromLocal();
             } else {
-                producer = new KafkaGPSProducer("gps-topic1", false, true);
+                producer = new KafkaGPSProducer(ConfigVars.STRG_TOPIC_GPS_PRODUCER, false, true);
                 producer.log.info("reading from S3");
                 producer.readFromS3(BUCKET, BUCKET_KEY);
             }
@@ -71,8 +72,8 @@ public class KafkaGPSProducer extends BaseTextProducer<String> {
      * @throws IOException
      */
     public void readFromS3(String bucketName, String key) throws IOException {
-        String accessKey = System.getenv("aws_access_key_id");
-        String secretKey = System.getenv("aws_secret_access_key");
+        String accessKey = System.getenv(ConfigVars.AWS_ACCESS_KEY);
+        String secretKey = System.getenv(ConfigVars.AWS_SECRET_KEY);
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();

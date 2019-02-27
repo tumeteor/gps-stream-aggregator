@@ -10,11 +10,12 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import streams.Probe;
+import streams.config.ConfigVars;
 
 import java.util.Collections;
 
 public class AvroGPSAggregator extends BaseAggregator<GenericRecord> {
-    final String schemaRegistryUrl = System.getenv("SCHEMA_REGISTRY_HOST");
+    final String schemaRegistryUrl = System.getenv(ConfigVars.SCHEMA_REGISTRY_HOST);
     public AvroGPSAggregator() {
         super();
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
@@ -83,6 +84,6 @@ public class AvroGPSAggregator extends BaseAggregator<GenericRecord> {
 
     public static void main (String[] args) {
         AvroGPSAggregator agg = new AvroGPSAggregator();
-        agg.run("probe-avro", "gps-trace-output");
+        agg.run(ConfigVars.AVRO_TOPIC_GPS_PRODUCER, ConfigVars.AVRO_TOPIC_GPS_AGG);
     }
 }

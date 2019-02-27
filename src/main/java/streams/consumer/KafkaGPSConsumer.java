@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.json.JSONObject;
 import osrm.Utils;
+import streams.config.ConfigVars;
 import streams.producer.BaseProducer;
 
 import java.time.Duration;
@@ -16,14 +17,14 @@ import static streams.producer.AbstractProducer.SERIALIZER.STRINGSE;
 
 public class KafkaGPSConsumer extends AbstractConsumer {
 
-    BaseProducer producer = new BaseProducer("mm-topic", false, (System.getenv("KAFKA_HOST") != null), STRINGSE);
+    BaseProducer producer = new BaseProducer(ConfigVars.MAPMATCH_TOPIC, false, (System.getenv(ConfigVars.KAFKA_HOST) != null), STRINGSE);
 
     public KafkaGPSConsumer(String kafka_topic) {
         super(kafka_topic);
     }
 
     public static void main(String[] args) {
-        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer("gps-trace-output");
+        KafkaGPSConsumer gpsConsumer = new KafkaGPSConsumer(ConfigVars.AVRO_TOPIC_GPS_AGG);
         gpsConsumer.run();
     }
 

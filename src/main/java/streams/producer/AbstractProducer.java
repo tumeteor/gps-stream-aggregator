@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import streams.config.ConfigVars;
 
 import java.util.Properties;
 
@@ -26,7 +27,7 @@ public abstract class AbstractProducer<T> extends Thread {
 
         if (onK8s) {
             //namespace-kafka on k8s
-            props.put("bootstrap.servers", System.getenv("KAFKA_HOST"));
+            props.put("bootstrap.servers", System.getenv(ConfigVars.KAFKA_HOST));
         } else {
             props.put("bootstrap.servers", "localhost:9092");
         }
@@ -48,7 +49,7 @@ public abstract class AbstractProducer<T> extends Thread {
                         KafkaAvroSerializer.class.getName());
                 props.put("value.serializer",
                         KafkaAvroSerializer.class.getName());
-                props.put("schema.registry.url", System.getenv("SCHEMA_REGISTRY_HOST"));
+                props.put("schema.registry.url", System.getenv(ConfigVars.SCHEMA_REGISTRY_HOST));
 //                props.put("schema.registry.url", "http://localhost:18081");
                 break;
 

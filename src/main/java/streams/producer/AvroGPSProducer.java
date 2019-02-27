@@ -14,6 +14,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import streams.Probe;
+import streams.config.ConfigVars;
 
 import java.io.*;
 import java.util.concurrent.ExecutionException;
@@ -65,8 +66,8 @@ public class AvroGPSProducer extends BaseTextProducer<GenericRecord> {
      * @throws IOException
      */
     public void readFromS3(String bucketName, String key) throws IOException {
-        String accessKey = System.getenv("aws_access_key_id");
-        String secretKey = System.getenv("aws_secret_access_key");
+        String accessKey = System.getenv(ConfigVars.AWS_ACCESS_KEY);
+        String secretKey = System.getenv(ConfigVars.AWS_SECRET_KEY);
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
@@ -129,7 +130,7 @@ public class AvroGPSProducer extends BaseTextProducer<GenericRecord> {
 
     public Schema loadAvroSchema() throws IOException {
         // avro schema avsc file path.
-        String schemaPath = "/avro/Probe.avsc";
+        String schemaPath = ConfigVars.AVRO_PRODUCER_SCHEMA_PATH;
         // avsc json string.
         String schemaString = null;
 
@@ -160,11 +161,11 @@ public class AvroGPSProducer extends BaseTextProducer<GenericRecord> {
             CommandLine cmd = parser.parse(options, args);
             AvroGPSProducer producer;
             if (cmd.getOptionValue("onK8S") == null) {
-                producer = new AvroGPSProducer("probe-avro", false, false);
+                producer = new AvroGPSProducer(ConfigVars.AVRO_TOPIC_GPS_PRODUCER, false, false);
                 producer.log.info("reading from local");
                 producer.readFromLocal();
             } else {
-                producer = new AvroGPSProducer("probe-avro", false, true);
+                producer = new AvroGPSProducer(ConfigVars.AVRO_TOPIC_GPS_PRODUCER, false, true);
 //                producer.log.info("reading from S3");
 //                producer.readFromS3(BUCKET, BUCKET_KEY);
                 producer.log.info("reading from local");
