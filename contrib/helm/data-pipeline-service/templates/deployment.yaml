@@ -84,7 +84,4 @@ spec:
 
             command: ["/bin/sh"]
             args: ["-c", "java -cp kafka-misc-1.0-SNAPSHOT-jar-with-dependencies.jar streams.consumer.KafkaGPSConsumer"]
-
-          - image: {{ .Values.image }}
-            name: {{ .Release.Namespace }}-{{ .Chart.Name }}-kafka-sink
-            imagePullPolicy: Always
+            
