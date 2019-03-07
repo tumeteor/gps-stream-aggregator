@@ -7,11 +7,11 @@ data:
   SERVICE: {{ .Chart.Name }}
   VERSION: {{ .Chart.Version }}
   KAFKA_HOST: {{ .Release.Namespace }}-kafka-cp-kafka.kafka:9092
-  KAFKA_CONNECT_HOST: {{ .Release.Namespace }}-kafka-cp-kafka-connect:8083
+  KAFKA_CONNECT_HOST: {{ .Release.Namespace }}-kafka-cp-kafka-connect.kafka:8083
   ROUTING: http://{{ .Release.Namespace }}-routing-service-car:5000
   MINIO_BUCKET: {{ .Chart.Name }}
   MINIO_ENDPOINT: {{ .Release.Namespace }}-minio:9000
-  SCHEMA_REGISTRY_HOST: http://{{ .Release.Namespace }}-kafka-cp-schema-registry:8081
+  SCHEMA_REGISTRY_HOST: http://{{ .Release.Namespace }}-kafka-cp-schema-registry.kafka:8081
 
 
   #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
