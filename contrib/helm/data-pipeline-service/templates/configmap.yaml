@@ -6,17 +6,10 @@ metadata:
 data:
   SERVICE: {{ .Chart.Name }}
   VERSION: {{ .Chart.Version }}
-  KAFKA_HOST: {{ .Release.Namespace }}-kafka-cp-kafka.kafka:9092
-  KAFKA_CONNECT_HOST: {{ .Release.Namespace }}-kafka-cp-kafka-connect.kafka:8083
+  KAFKA_HOST: kafka-cp-kafka.kafka:9092
+  KAFKA_CONNECT_HOST: kafka-cp-kafka-connect.kafka:8083
   ROUTING: http://{{ .Release.Namespace }}-routing-service-car:5000
   MINIO_BUCKET: {{ .Chart.Name }}
-  MINIO_ENDPOINT: {{ .Release.Namespace }}-minio:9000
-  SCHEMA_REGISTRY_HOST: http://{{ .Release.Namespace }}-kafka-cp-schema-registry.kafka:8081
-
-
-  #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
-  #NODE_ENV: "production"
-  #URL: "https://{{ .Values.service }}.{{ .Release.Namespace }}.{{ .Values.global.base_url }}"
-  #ZIPKIN_SERVICE_URL: http://zipkin.{{ .Release.Namespace }}:9411
-
-  #BASE_PATH: /v1
+  MINIO_ENDPOINT: minio.minio:9000
+  SCHEMA_REGISTRY_HOST: http://kafka-cp-schema-registry.kafka:8081
+  
