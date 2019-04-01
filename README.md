@@ -23,8 +23,7 @@ The map-matched data, in the basic form of "<vec_id, time_window, trace_metadata
 <vec_id, time_window>. This allows data to be re-map matched in case of failing at the stream mode.
 
 ## Offline mode
-<img src="images/offline_mode_dp.png"  alt = "Offline mode" width="500">
-
+Ref: [Offline data pipeline repo](https://gitlab.mobilityservices.io/am/roam/batch-data-pipeline-service/)
 
 For offline mode, it is specifically for handling the scenario when the **base map is changed** - that is supposed to be a periodical behavior of base map providers 
 (i.e., HERE, Civil Map, OSM). The change of the base map does not (yet?) preserve the IDs (nodes, edges) of the previous version. In this case, the historical 
