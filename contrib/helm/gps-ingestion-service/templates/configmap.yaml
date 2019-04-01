@@ -13,10 +13,3 @@ data:
   MINIO_ENDPOINT: {{ .Release.Namespace }}-minio:9000
   SCHEMA_REGISTRY_HOST: http://{{ .Release.Namespace }}-kafka-cp-schema-registry:8081
 
-
-  #NODE_CONFIG_ENV: {{if eq .Release.Namespace "master"}}"prod"{{ else }}"qa"{{end}}
-  #NODE_ENV: "production"
-  #URL: "https://{{ .Values.service }}.{{ .Release.Namespace }}.{{ .Values.global.base_url }}"
-  #ZIPKIN_SERVICE_URL: http://zipkin.{{ .Release.Namespace }}:9411
-
-  #BASE_PATH: /v1
