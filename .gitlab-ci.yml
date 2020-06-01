@@ -1,2 +1,0 @@
-include:
-  - 'https://gitlab.mobilityservices.io/infra/gitlab-ci/raw/master/.otonomousmobility.com.yaml'
