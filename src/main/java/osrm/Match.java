@@ -17,8 +17,7 @@ import java.net.URI;
 
 public class Match {
 
-    //String OSRM_SERVER = "http://0.0.0.0:5000";
-    String OSRM_SERVER = "https://routing.develop.otonomousmobility.com/car/";
+    String OSRM_SERVER = "http://0.0.0.0:5000";
 
     HttpClient httpClient;
 
@@ -114,16 +113,5 @@ public class Match {
             System.out.println(e.getMessage());
         }
         return result;
-    }
-
-    public static void main (String[] args) {
-        Match osrm_match = new Match();
-        String coordinates = "13.43605,52.417229999999996\t13.436279999999998,52.41727";
-
-        JSONObject map_matched = osrm_match.matchPointWithJson(coordinates);
-
-        if (map_matched != null)
-            System.out.println(Utils.toPrettyFormat(map_matched));
-
     }
 }
